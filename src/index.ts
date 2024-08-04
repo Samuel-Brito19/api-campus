@@ -13,6 +13,7 @@ declare module "fastify" {
 }
 
 function buildServer() {
+    
     const fastify = Fastify({ logger: true });
 
     fastify.register(cors, {
@@ -33,4 +34,8 @@ function buildServer() {
         req.jwt = fastify.jwt
         return next()
     })
+
+    return fastify
 }
+
+export default buildServer;
