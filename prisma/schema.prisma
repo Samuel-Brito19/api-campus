@@ -14,32 +14,33 @@ datasource db {
 }
 
 model User {
-  id         Int              @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   full_name  String
-  email      String           @unique
+  email      String          @unique
   password   String
-  created_at DateTime         @default(now())
-  updated_at DateTime         @default(now()) @updatedAt
-  address    Address[]
+  created_at DateTime        @default(now())
+  updated_at DateTime        @default(now()) @updatedAt
+  address    Address?        @relation(fields: [addressId], references: [id])
   posts      Post[]
-  favorites  FavoritedPosts[]
+  favorites  FavoritedPost[]
   Order      Order[]
   Cart       Cart[]
+  addressId  Int?
 }
 
 model Post {
-  id                 Int              @id @default(autoincrement())
+  id                 Int             @id @default(autoincrement())
   title              String
   description        String
   image              String
   location           String
   price              Float
   available_quantity Int
-  user               User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user               User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id            Int
-  FavoritedPosts     FavoritedPosts[]
-  Order              Order[]
-  category           PostCategory     @relation(fields: [category_id], references: [id])
+  favorited_posts    FavoritedPost[]
+  order              Order[]
+  category           PostCategory    @relation(fields: [category_id], references: [id])
   category_id        Int
 }
 
@@ -56,18 +57,18 @@ model Address {
   state    String
   number   String
   zip_code String
-  user     User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id  Int
   Order    Order[]
+  User     User[]
 }
 
-model FavoritedPosts {
+model FavoritedPost {
   id      Int  @id @default(autoincrement())
   user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
   post    Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id Int
-  Cart    Cart @relation(fields: [], references: [])
+  Cart    Cart @relation(fields: [cart_id], references: [id])
+  cart_id Int
 }
 
 model Order {
@@ -82,11 +83,11 @@ model Order {
 }
 
 model Cart {
-  id              Int              @id @default(autoincrement())
-  user            User             @relation(fields: [user_id], references: [id])
+  id              Int             @id @default(autoincrement())
+  user            User            @relation(fields: [user_id], references: [id])
   user_id         Int
-  favorited_posts FavoritedPosts[]
+  favorited_posts FavoritedPost[]
   quantity        Int
-  created_at      DateTime         @default(now())
-  modiefied_at    DateTime         @default(now()) @updatedAt
+  created_at      DateTime        @default(now())
+  modiefied_at    DateTime        @default(now()) @updatedAt
 }
