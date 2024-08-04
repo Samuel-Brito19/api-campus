@@ -23,6 +23,8 @@ model User {
   address    Address[]
   posts      Post[]
   favorites  FavoritedPosts[]
+  Order      Order[]
+  Cart       Cart[]
 }
 
 model Post {
@@ -36,17 +38,27 @@ model Post {
   user               User             @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id            Int
   FavoritedPosts     FavoritedPosts[]
+  Order              Order[]
+  category           PostCategory     @relation(fields: [category_id], references: [id])
+  category_id        Int
+}
+
+model PostCategory {
+  id    Int    @id @default(autoincrement())
+  name  String
+  posts Post[]
 }
 
 model Address {
-  id       Int    @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   street   String
   city     String
   state    String
   number   String
   zip_code String
-  user     User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id  Int
+  Order    Order[]
 }
 
 model FavoritedPosts {
@@ -55,4 +67,26 @@ model FavoritedPosts {
   user_id Int
   post    Post @relation(fields: [post_id], references: [id], onDelete: Cascade)
   post_id Int
+  Cart    Cart @relation(fields: [], references: [])
+}
+
+model Order {
+  id               Int     @id @default(autoincrement())
+  total            Int
+  user             User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id          Int
+  post             Post    @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post_id          Int
+  address          Address @relation(fields: [order_address_id], references: [id])
+  order_address_id Int
+}
+
+model Cart {
+  id              Int              @id @default(autoincrement())
+  user            User             @relation(fields: [user_id], references: [id])
+  user_id         Int
+  favorited_posts FavoritedPosts[]
+  quantity        Int
+  created_at      DateTime         @default(now())
+  modiefied_at    DateTime         @default(now()) @updatedAt
 }
