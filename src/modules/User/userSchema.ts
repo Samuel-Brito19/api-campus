@@ -9,10 +9,6 @@ const userCore = {
     name: z.string()
 }
 
-const  user = {
-    id: number(),
-    email: string()
-}
 const createUserSchema = z.object({
     ...userCore,
     password: z.string({
