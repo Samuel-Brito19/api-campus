@@ -1,6 +1,6 @@
 import {hash} from 'bcrypt'
 import { prisma } from '../../database'
-import { completeUser, createUserSchema } from './userSchema'
+import { createUserSchema } from './userSchema'
 
 export const createUser = async (params: createUserSchema) => {
     const {password} = params
@@ -33,15 +33,14 @@ export const findUsers = async () => {
     })
 }
 
-export const updateUser = async (params: completeUser) => {
+export const updateUser = async (params: createUserSchema) => {
+    
     const updateUser = await prisma.user.update({
         where: {
-            id: params.id
+            email: params.email
         },
         data: {
-            name: params.name,
-            email: params.email,
-            password: params.password
+            ...params
         }
     })
 

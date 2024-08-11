@@ -2,6 +2,8 @@
 import fjwt, { JWT } from "@fastify/jwt";
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
+import { userSchemas } from "./modules/User/userSchema";
+import userRoutes from "./modules/User/userRoutes";
 
 declare module "fastify" {
     interface FastifyRequest {
@@ -34,6 +36,12 @@ function buildServer() {
         req.jwt = fastify.jwt
         return next()
     })
+
+    for(const schema of [...userSchemas]) {
+        fastify.addSchema(schema)
+    }
+
+    fastify.register(userRoutes, { prefix: "/users" });
 
     return fastify
 }

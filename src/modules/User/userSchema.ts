@@ -9,11 +9,6 @@ const userCore = {
     name: z.string()
 }
 
-const completeUser = z.object({
-    ...userCore,
-    id: z.number(),
-    password: z.string()
-})
 
 const createUserSchema = z.object({
     ...userCore,
@@ -43,8 +38,6 @@ const loginResponseSchema = z.object({
 
 export type createUserSchema = z.infer<typeof createUserSchema>;
 
-export type completeUser = z.infer<typeof completeUser>;
-
 export type login = z.infer<typeof loginSchema>;
 
 export const {schemas: userSchemas, $ref} = buildJsonSchemas({
@@ -52,5 +45,4 @@ export const {schemas: userSchemas, $ref} = buildJsonSchemas({
     userNoPassword,
     loginSchema,
     loginResponseSchema,
-    completeUser
 })
