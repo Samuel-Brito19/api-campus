@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { createUserSchema, login } from "./userSchema";
-import { createUser, findUserEmail, findUsers, updateUser } from "./userService";
+import { createUser, deleteUser, findUserEmail, findUsers, updateUser } from "./userService";
 import { compare } from "bcrypt";
 
 export const registerUserHandler = async (req: FastifyRequest<{Body: createUserSchema}>, 
@@ -21,15 +21,16 @@ export const registerUserHandler = async (req: FastifyRequest<{Body: createUserS
         }
 }
 
-export const updateUserHandler = async (req: FastifyRequest<{Body: createUserSchema}>,
+export const updateUserHandler = async (req: FastifyRequest<{Body: createUserSchema, Params: {id: number}}>,
     rep: FastifyReply) => {
+        const {id} = req.params
         const body = req.body
 
         try {
             const user = await updateUser(body)
 
             return rep.code(201).send({
-                id: user.id,
+                id,
                 email: user.email,
                 name: user.name
             })
@@ -38,6 +39,19 @@ export const updateUserHandler = async (req: FastifyRequest<{Body: createUserSch
             return rep.code(500).send(error)
         }
     }
+
+export const deleteUserHandler = async (req: FastifyRequest<{Params: {id: number}}>,) => {
+    const id = req.params.id
+
+    try {
+        const user = await deleteUser(id)
+
+        return user
+    } catch (error) {
+        console.error(error)
+        return error
+    }
+}
 export const loginHandler = async (req: FastifyRequest<{Body: login}>, rep: FastifyReply) => {
     const body = req.body
 

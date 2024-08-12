@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify"
-import { getUsersHandler, loginHandler, registerUserHandler, updateUserHandler } from "./userController"
+import { deleteUserHandler, getUsersHandler, loginHandler, registerUserHandler, updateUserHandler } from "./userController"
 import { $ref } from "./userSchema"
 
-const userRoutes = (server: FastifyInstance) => {
+const userRoutes = async (server: FastifyInstance) => {
     server.post('/', {
         schema: {
             body: $ref('createUserSchema'),
@@ -23,6 +23,7 @@ const userRoutes = (server: FastifyInstance) => {
     }, getUsersHandler)
 
     server.patch('/:id', {
+        preHandler: [server.authenticate],
         schema: {
             body: $ref('createUserSchema'),
             response: {
@@ -30,6 +31,10 @@ const userRoutes = (server: FastifyInstance) => {
             }
         }
     }, updateUserHandler)
+
+    server.delete('/:id', {
+        preHandler: [server.authenticate]
+    }, deleteUserHandler)
 
 }
 
